@@ -1,0 +1,201 @@
+/* 全局样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: "微软雅黑", "Microsoft YaHei", sans-serif;
+    background-color: #FFFFFF;
+    color: #333333;
+}
+h1, h2, h3, h4, h5, h6 {
+    font-family: "方正黑体", "Fangzheng HeiTi", sans-serif;
+    font-weight: bold;
+    color: #C91F37;  /* 北理红主色调 */
+}
+a {
+    text-decoration: none;
+    color: #333;
+}
+/* 北理红配色 */
+:root {
+    --bit-red: #C91F37;
+    --white: #FFFFFF;
+    --light-gray: #F5F5F5;
+    --dark-blue: #1A365D;
+}
+/* 按钮样式（全圆角，需求规范） */
+.btn-bit {
+    background-color: var(--bit-red);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.btn-bit-outline {
+    background-color: var(--white);
+    color: var(--bit-red);
+    border: 1px solid var(--bit-red);
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.btn-bit:hover, .btn-bit-outline:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+/* 导航栏 */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--white);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 999;
+    padding: 10px 0;
+}
+.header .logo {
+    display: flex;
+    align-items: center;
+}
+.header .logo img {
+    height: 40px;
+    margin-right: 10px;
+}
+.header .nav a {
+    margin: 0 15px;
+    color: var(--white);
+    font-size: 16px;
+}
+.header .nav a:hover {
+    color: var(--bit-red);
+}
+.header .nav .active {
+    color: var(--bit-red);
+    font-weight: bold;
+}
+/* 主内容区 */
+.main {
+    margin-top: 80px;
+    padding: 40px 0;
+}
+/* Banner区 */
+.banner {
+    width: 100%;
+    height: 500px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    text-align: center;
+    position: relative;
+}
+.banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1;
+}
+.banner .content {
+    position: relative;
+    z-index: 2;
+}
+.banner h1 {
+    font-size: 48px;
+    color: var(--white);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    -webkit-text-stroke: 1px var(--bit-red);  /* 红边描边，需求规范 */
+}
+.banner p {
+    font-size: 20px;
+    margin: 20px 0 30px;
+}
+/* 卡片样式 */
+.card {
+    border: 1px solid var(--light-gray);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    transition: all 0.3s;
+}
+.card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+/* 测评题样式 */
+.question {
+    margin-bottom: 30px;
+}
+.question .options {
+    margin-top: 15px;
+}
+.question .options label {
+    display: block;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid var(--light-gray);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+.question .options label:hover {
+    border-color: var(--bit-red);
+}
+.question .options input:checked + label {
+    background-color: var(--bit-red);
+    color: var(--white);
+    border-color: var(--bit-red);
+}
+/* 后台管理样式 */
+.admin-sidebar {
+    background-color: var(--light-gray);
+    height: calc(100vh - 80px);
+    padding: 20px;
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 200px;
+}
+.admin-sidebar a {
+    display: block;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+.admin-sidebar a.active {
+    background-color: var(--bit-red);
+    color: var(--white);
+}
+.admin-content {
+    margin-left: 220px;
+    padding: 20px;
+}
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .banner h1 {
+        font-size: 32px;
+    }
+    .banner {
+        height: 300px;
+    }
+    .admin-sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        top: 0;
+        left: 0;
+    }
+    .admin-content {
+        margin-left: 0;
+    }
+}
