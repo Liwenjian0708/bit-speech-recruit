@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册/登录 - 京工演说团招新平台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .tab-nav { border-bottom: 2px solid #eee; }
+        .tab-nav a { padding: 0.5rem 2rem; font-weight: bold; }
+        .tab-nav a.active { color: #C91F37; border-bottom: 2px solid #C91F37; }
+        .login-card { box-shadow: 0 0 20px rgba(0,0,0,0.05); border-radius: 12px; }
+    </style>
+</head>
+<body style="background-color: #F5F5F5; padding: 5rem 0;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8">
+                <div class="login-card bg-white p-5 rounded">
+                    <!-- 标签页切换 -->
+                    <div class="tab-nav d-flex justify-content-center mb-5">
+                        <a href="javascript:;" id="login-tab" class="active text-decoration-none">登录</a>
+                        <a href="javascript:;" id="register-tab" class="text-decoration-none">注册</a>
+                    </div>
+
+                    <!-- 登录表单 -->
+                    <form id="login-form" action="{{ url_for('login') }}" method="POST" class="mb-0">
+                        <input type="hidden" name="login" value="1">
+                        <div class="mb-3">
+                            <label class="form-label">手机号 <span class="text-danger">*</span></label>
+                            <input type="tel" class="form-control rounded-pill px-4" name="phone" id="log-phone" placeholder="请输入手机号" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">登录密码 <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control rounded-pill px-4" name="pwd" id="log-pwd" placeholder="请输入登录密码" required>
+                        </div>
+                        <div class="d-flex justify-content-between mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="remember">
+                                <label class="form-check-label" for="remember">记住我</label>
+                            </div>
+                            <a href="#" class="text-secondary text-decoration-none">忘记密码？</a>
+                        </div>
+                        <button type="button" class="btn btn-bit w-100 rounded-pill py-2 login-submit">登 录</button>
+                    </form>
+
+                    <!-- 注册表单 -->
+                    <form id="register-form" action="{{ url_for('login') }}" method="POST" class="mb-0 d-none">
+                        <input type="hidden" name="register" value="1">
+                        <!-- 基础信息 -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">手机号 <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control rounded-pill px-4" name="phone" id="reg-phone" placeholder="请输入手机号" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">验证码 <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control rounded-pill px-4" placeholder="请输入验证码" required>
+                                    <button class="btn btn-outline-secondary rounded-pill ms-2" type="button">获取</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">登录密码 <span class="text-danger">*</span></label>
+                                <input type="password" class="form-control rounded-pill px-4" name="pwd" id="reg-pwd" placeholder="请设置6-16位密码" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">真实姓名 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control rounded-pill px-4" name="name" id="reg-name" placeholder="请输入真实姓名" required>
+                            </div>
+                        </div>
+                        <!-- 学业信息 -->
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label class="form-label">年级 <span class="text-danger">*</span></label>
+                                <select class="form-select rounded-pill px-4" name="grade" required>
+                                    <option value="">请选择年级</option>
+                                    <option value="2023级">2023级</option>
+                                    <option value="2024级">2024级</option>
+                                    <option value="2025级">2025级</option>
+                                    <option value="2026级">2026级</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">学院 <span class="text-danger">*</span></label>
+                                <select class="form-select rounded-pill px-4" name="college" required>
+                                    <option value="">请选择学院</option>
+                                    <option value="机电学院">机电学院</option>
+                                    <option value="信息与电子学院">信息与电子学院</option>
+                                    <option value="自动化学院">自动化学院</option>
+                                    <option value="计算机学院">计算机学院</option>
+                                    <option value="软件学院">软件学院</option>
+                                    <option value="材料学院">材料学院</option>
+                                    <option value="化工与环境学院">化工与环境学院</option>
+                                    <option value="生命学院">生命学院</option>
+                                    <option value="理学院">理学院</option>
+                                    <option value="管理与经济学院">管理与经济学院</option>
+                                    <option value="人文与社会科学学院">人文与社会科学学院</option>
+                                    <option value="法学院">法学院</option>
+                                    <option value="设计与艺术学院">设计与艺术学院</option>
+                                    <option value="外国语学院">外国语学院</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">专业 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control rounded-pill px-4" name="major" placeholder="请输入专业" required>
+                            </div>
+                        </div>
+                        <!-- 时间偏好采集（核心必填） -->
+                        <div class="mb-3">
+                            <label class="form-label">日常可参与社团活动时间段 <span class="text-danger">*</span></label>
+                            <div class="d-flex flex-wrap gap-2">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="time_slot" value="周一至周五晚间" required>
+                                    <label class="form-check-label">周一至周五晚间</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="time_slot" value="周末全天">
+                                    <label class="form-check-label">周末全天</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="time_slot" value="周三下午">
+                                    <label class="form-check-label">周三下午</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="time_slot" value="其他课余时间">
+                                    <label class="form-check-label">其他课余时间</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">学期忙碌阶段 <span class="text-danger">*</span></label>
+                            <div class="d-flex flex-wrap gap-2">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="busy_week" value="期中周（第8-9周）">
+                                    <label class="form-check-label">期中周（第8-9周）</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="busy_week" value="期末周（第16-18周）">
+                                    <label class="form-check-label">期末周（第16-18周）</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="busy_week" value="无特殊忙碌时段" required>
+                                    <label class="form-check-label">无特殊忙碌时段</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">活动参与偏好 <span class="text-danger">*</span></label>
+                            <select class="form-select rounded-pill px-4" name="activity_pre" required>
+                                <option value="">请选择参与偏好</option>
+                                <option value="可参与线下集训">可参与线下集训</option>
+                                <option value="仅能参与线上活动">仅能参与线上活动</option>
+                                <option value="寒暑假可参与集训">寒暑假可参与集训</option>
+                            </select>
+                        </div>
+                        <!-- 协议勾选 -->
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="protocol" required>
+                            <label class="form-check-label text-secondary" for="protocol">
+                                我已阅读并同意<a href="#" class="text-danger text-decoration-none">《用户协议》</a>和<a href="#" class="text-danger text-decoration-none">《信息保密说明》</a>
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-bit w-100 rounded-pill py-2 register-submit">注 册</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

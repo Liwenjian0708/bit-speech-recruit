@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<footer style="background-color: #F5F5F5; padding: 3rem 0; margin-top: 5rem;">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-md-4 mb-3 mb-md-0">
+                <h5 style="color: #C91F37; font-weight: bold;">社团联系方式</h5>
+                <p class="mb-0">招新QQ群：123456789</p>
+                <p class="mb-0">负责人微信：BIT_Speech2025</p>
+                <p class="mb-0">联系电话：010-12345678</p>
+            </div>
+            <div class="col-md-4">
+                <h5 style="color: #C91F37; font-weight: bold;">社团二维码</h5>
+                <img src="{{ url_for('static', filename='img/qrcode.png') }}" alt="招新二维码" width="120" height="120" style="border: 1px solid #eee; padding: 5px;">
+            </div>
+        </div>
+        <div class="row justify-content-center text-center mt-4">
+            <div class="col-12">
+                <p class="mb-0" style="color: #666; font-size: 14px;">© 2025 北京理工大学京工演说团 版权所有 | 京工演说团招新智能匹配平台</p>
+                <a href="#" style="color: #C91F37; font-size: 14px;">用户协议</a> | <a href="#" style="color: #C91F37; font-size: 14px;">信息保密说明</a>
+            </div>
+        </div>
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</body>
+</html>

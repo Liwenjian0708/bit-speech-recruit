@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心 - 京工演说团招新平台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .personal-sidebar { background-color: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+        .personal-sidebar a { display: block; padding: 1rem; border-bottom: 1px solid #F5F5F5; font-weight: 500; }
+        .personal-sidebar a.active { color: #C91F37; background-color: #FDEDED; }
+        .personal-card { background-color: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.05); padding: 2rem; }
+        .status-tag { padding: 0.2rem 0.8rem; border-radius: 20px; font-size: 14px; }
+        .status-wait { background-color: #FFF3CD; color: #DAA520; }
+        .status-pass1 { background-color: #D1ECF1; color: #0C5460; }
+        .status-pass2 { background-color: #E8F5E9; color: #28A745; }
+        .status-admit { background-color: #FDEDED; color: #C91F37; }
+    </style>
+</head>
+<body style="background-color: #F5F5F5; padding: 3rem 0;">
+    <div class="container">
+        <div class="row">
+            <!-- 左侧侧边栏 -->
+            <div class="col-md-3 mb-4 mb-md-0">
+                <div class="personal-sidebar">
+                    <a href="#info" class="active">个人资料</a>
+                    <a href="#time">我的时间偏好</a>
+                    <a href="#progress">报名进度</a>
+                    <a href="#report">我的匹配报告</a>
+                    <a href="{{ url_for('captain') }}">重新测评/一键报名</a>
+                    <a href="{{ url_for('logout') }}" style="color: #dc3545;">退出登录</a>
+                </div>
+            </div>
+
+            <!-- 右侧内容区 -->
+            <div class="col-md-9">
+                <!-- 1. 个人资料 -->
+                <section id="info" class="personal-card mb-4">
+                    <h4 style="color: #C91F37; font-weight: bold; margin-bottom: 2rem;">个人资料</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-secondary">真实姓名</label>
+                            <p class="form-control-plaintext fs-5">{{ user.name }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-secondary">手机号</label>
+                            <p class="form-control-plaintext fs-5">{{ user.phone }}</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label text-secondary">年级</label>
+                            <p class="form-control-plaintext fs-5">{{ user.grade }}</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label text-secondary">学院</label>
+                            <p class="form-control-plaintext fs-5">{{ user.college }}</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label text-secondary">专业</label>
+                            <p class="form-control-plaintext fs-5">{{ user.major }}</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-danger btn-sm">修改资料</button>
+                </section>
+
+                <!-- 2. 我的时间偏好 -->
+                <section id="time" class="personal-card mb-4 d-none">
+                    <h4 style="color: #C91F37; font-weight: bold; margin-bottom: 2rem;">我的时间偏好</h4>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-secondary">日常可参与时段</label>
+                            <p class="form-control-plaintext fs-5">{{ user.time_slot.replace(',', '、') }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-secondary">学期忙碌阶段</label>
+                            <p class="form-control-plaintext fs-5">{{ user.busy_week.replace(',', '、') }}</p>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label class="form-label text-secondary">活动参与偏好</label>
+                            <p class="form-control-plaintext fs-5">{{ user.activity_pre }}</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-danger btn-sm">修改时间偏好</button>
+                </section>
+
+                <!-- 3. 报名进度 -->
+                <section id="progress" class="personal-card mb-4 d-none">
+                    <h4 style="color: #C91F37; font-weight: bold; margin-bottom: 2rem;">报名进度</h4>
+                    {% if apply %}
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-secondary">报名队伍</label>
+                                <p class="form-control-plaintext fs-5">
+                                    第一志愿：{{ {'speech':'演讲队','host':'主持队','debate':'辩论队','dubbing':'配音队'}[apply.team1] }}<br>
+                                    第二志愿：{{ apply.team2|default('无', true) | replace('speech','演讲队') | replace('host','主持队') | replace('debate','辩论队') | replace('dubbing','配音队') }}
+                                </p>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-secondary">报名状态</label>
+                                <p class="form-control-plaintext fs-5">
+                                    {% if apply.status == '待审核' %}
+                                        <span class="status-tag status-wait">{{ apply.status }}</span>
+                                    {% elif apply.status == '初试通过' %}
+                                        <span class="status-tag status-pass1">{{ apply.status }}</span>
+                                    {% elif apply.status == '复试通知' %}
+                                        <span class="status-tag status-pass2">{{ apply.status }}</span>
+                                    {% elif apply.status == '录取成功' %}
+                                        <span class="

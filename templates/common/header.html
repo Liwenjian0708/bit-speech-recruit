@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<header class="header">
+    <div class="container d-flex justify-content-between align-items-center">
+        <!-- 左侧LOGO+全称 -->
+        <div class="logo d-flex align-items-center">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="京工演说团LOGO" height="40">
+            <h2 class="ms-2 mb-0" style="font-size: 18px;">北京理工大学京工演说团</h2>
+        </div>
+        <!-- 右侧导航菜单 -->
+        <nav class="nav d-none d-md-flex align-items-center">
+            <a href="{{ url_for('index') }}" class="me-4">首页</a>
+            <a href="#" class="me-4">社团介绍</a>
+            <a href="#" class="me-4">招新政策</a>
+            {% if 'user_id' in session %}
+                <a href="{{ url_for('personal') }}" class="me-4">个人中心</a>
+                <a href="{{ url_for('captain') }}" class="btn-bit-outline">一键报名</a>
+                <a href="{{ url_for('logout') }}" class="ms-3">退出</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="btn-bit-outline">注册/登录</a>
+            {% endif %}
+        </nav>
+        <!-- 移动端导航按钮 -->
+        <button class="btn btn-outline-danger d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileNav" aria-controls="mobileNav">
+            菜单
+        </button>
+    </div>
+    <!-- 移动端侧边导航 -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="mobileNav" aria-labelledby="mobileNavLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="mobileNavLabel">京工演说团</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column">
+            <a href="{{ url_for('index') }}" class="py-2 border-bottom">首页</a>
+            <a href="#" class="py-2 border-bottom">社团介绍</a>
+            <a href="#" class="py-2 border-bottom">招新政策</a>
+            {% if 'user_id' in session %}
+                <a href="{{ url_for('personal') }}" class="py-2 border-bottom">个人中心</a>
+                <a href="{{ url_for('captain') }}" class="py-2 border-bottom btn-bit text-center my-2">一键报名</a>
+                <a href="{{ url_for('logout') }}" class="py-2">退出</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="py-2 btn-bit text-center my-2">注册/登录</a>
+            {% endif %}
+        </div>
+    </div>
+</header>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</body>
+</html>

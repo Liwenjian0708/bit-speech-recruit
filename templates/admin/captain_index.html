@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>京工演说团 - {{ session['admin_name'] }}队长后台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .admin-sidebar a.active { background: #C91F37; color: #fff; }
+        .table th { color: #C91F37; }
+        .modal-header { background: #C91F37; color: #fff; }
+        .modal-title { font-weight: bold; }
+    </style>
+</head>
+<body style="background-color: #F5F5F5;">
+<!-- 后台导航栏 -->
+<header class="header" style="background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <div class="container d-flex justify-content-between align-items-center">
+        <h3 class="mb-0" style="color: #C91F37;">京工演说团 - {{ session['admin_name'] }}队长后台</h3>
+        <div class="d-flex align-items-center">
+            <span class="me-3">所属队伍：{{ {'speech':'演讲队','host':'主持队','debate':'辩论队','dubbing':'配音队'}[session['team']] }}</span>
+            <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-sm">退出登录</a>
+        </div>
+    </div>
+</header>
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- 左侧侧边栏 -->
+        <div class="col-md-2 admin-sidebar p-3 bg-white rounded">
+            <a href="#activity" class="d-block p-2 rounded mb-2 active">本队活动日历管理</a>
+            <a href="#apply" class="d-block p-2 rounded mb-2">本队报名数据管理</a>
+            <a href="#" class="d-block p-2 rounded mb-2 btn-bit text-center">发送面试通知</a>
+        </div>
+
+        <!-- 右侧内容区 -->
+        <div class="col-md-10 ms-auto p-3 bg-white rounded">
+            <!-- 1. 本队活动日历管理 -->
+            <section id="activity" class="mb-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 style="color: #C91F37; font-weight: bold;">本队活动日历管理</h4>
+                    <button class="btn btn-bit add-btn" data-url="/admin/api/activity">新增活动</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>活动名称</th>
+                                <th>活动时段</th>
+                                <th>活动周次</th>
+                                <th>优先级</th>
+                                <th>活动形式</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activity-list">
+                            <!-- 后端动态渲染数据 -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 2. 本队报名数据管理 -->
+            <section id="apply">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 style="color: #C91F37; font-weight: bold;">本队报名数据管理</h4>
+                    <select class="form-select w-25" id="status-filter">
+                        <option value="all">所有状态</option>
+                        <option value="待审核">待审核</option>
+                        <option value="初试通过">初试通过</option>
+                        <option value="复试通知">复试通知</option>
+                        <option value="录取成功">录取成功</option>
+                    </select>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>姓名</th>
+                                <th>手机号</th>
+                                <th>年级/学院/专业</th>
+                                <th>报名类型</th>
+                                <th>自我介绍</th>
+                                <th>语言特长</th>
+                                <th>报名状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="apply-list">
+                            <!-- 后端动态渲染数据 -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<!-- 新增活动模态框 -->
+<div class="modal fade" id="add-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">新增本队活动</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="add-form">
+                    <input type="hidden" name="team" value="{{ session['team'] }}">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">活动名称 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="name" required placeholder="请输入活动名称">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">活动时段 <span class="text-danger">*</span></label>
+                            <select class="form-select" name="time_slot" required>
+                                <option value="">请选择时段</option>
+                                <option value="周一至周五晚间">周一至周五晚间</option>
+                                <option value="周末全天">周末全天</option>
+                                <option value="周三下午">周三下午</option>
+                                <option value="其他课余时间">其他课余时间</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">活动周次 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="week" required placeholder="例：第12-14周/每周五">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">优先级 <span class="text-danger">*</span></label>
+                            <select class="form-select" name="priority" required>
+                                <option value="">请选择</option>
+                                <option value="高">高</option>
+                                <option value="中">中</option>
+                                <option value="低">低</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">活动形式 <span class="text-danger">*</span></label>
+                            <select class="form-select" name="form" required>
+                                <option value="">请选择</option>
+                                <option value="线上">线上</option>
+                                <option value="线下">线下</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-bit submit-add" data-url="/admin/api/activity">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑活动模态框 -->
+<div class="modal fade" id="edit-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">编辑活动</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="edit-form">
+                    <input type="hidden" name="id" id="edit-id">
+                    <input type="hidden" name="team" value="{{ session['team'] }}">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">活动名称 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="name" id="edit-name" required placeholder="请输入活动名称">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">活动时段 <span class="text-danger">*</span></label>
+                            <select class="form-select" name="time_slot" id="edit-time_slot" required>
+                                <option value="">请选择时段</option>
+                                <option value="周一至周五晚间">周一至周五晚间</option>
+                                <option value="周末全天">周末全天</option>
+                                <option value="周三下午">周三下午</option>
+                                <option value="其他课余时间">其他课余时间</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">活动周次 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="week" id="edit-week" required placeholder="例：第12-14周/每周五">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">优先级 <span class="text-danger">*</span></label>
+                            <select class="form-select" name="priority" id="edit-priority" required>
+                                <option value="">请选择</option>
+                                <option value="高">高</option>
+                                <option value="中">中</option>
+                                <option value="低">低</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">活动形式 <span class="text-danger">*</span></label>
+                            <select class="form-select" name="form" id="edit-form" required>
+                                <option value="">请选择</option>
+                                <option value="线上">线上</option>
+                                <option value="线下">线下</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-bit submit-edit" data-url="/admin/api/activity">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 状态审核模态框 -->
+<div class="modal fade" id="status-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">修改报名状态</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="status-form">
+                    <input type="hidden" name="id" id="status-id">
+                    <div class="mb-3">
+                        <label class="form-label">报名状态 <span class="text-danger">*</span></label>
+                        <select class="form-select" name="status" required>
+                            <option value="待审核">待审核</option>
+                            <option value="初试通过">初试通过</option>
+                            <option value="复试通知">复试通知</option>
+                            <option value="录取成功">录取成功</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-bit" id="status-submit">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
+// 页面加载获取本队数据
+$(function() {
+    const team = "{{ session['team'] }}";
+    const teamMap = {speech:'演讲队', host:'主持队', debate:'辩论队', dubbing:'配音队'};
+
+    // 获取本队活动数据
+    $.get(`/admin/api/activity?team=${team}`, function(res) {
+        if (res.status === 'success') {
+            let html = '';
+            res.data.forEach(item => {
+                html += `<tr>
+                    <td>${item.id}</td>
+                    <td>${item.name}</td>
+                    <td>${item.time_slot}</td>
+                    <td>${item.week}</td>
+                    <td>${item.priority}</td>
+                    <td>${item.form}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary edit-btn" data-id="${item.id}" data-url="/admin/api/activity">编辑</button>
+                        <button class="btn btn-sm btn-danger del-btn" data-id="${item.id}" data-url="/admin/api/activity">删除</button>
+                    </td>
+                </tr>`;
+            });
+            $('#activity-list').html(html);
+        }
+    });
+
+    // 获取本队报名数据
+    function getApplyData(status = 'all') {
+        let url = `/admin/api/apply?team=${team}`;
+        if (status !== 'all') url += `&status=${status}`;
+        $.get(url, function(res) {
+            if (res.status === 'success') {
+                let html = '';
+                res.data.forEach(item => {
+                    const applyType = item.team1 === team ? '第一志愿' : '第二志愿';
+                    html += `<tr>
+                        <td>${item.id}</td>
+                        <td>${item.name}</td>
+                        <td>${item.phone}</td>
+                        <td>${item.grade}/${item.college}/${item.major}</td>
+                        <td>${applyType}</td>
+                        <td>${item.intro || '无'}</td>
+                        <td>${item.specialty || '无'}</td>
+                        <td>${item.status}</td>
+                        <td>
+                            <button class="btn btn-sm btn-warning status-btn" data-id="${item.id}">修改状态</button>
+                        </td>
+                    </tr>`;
+                });
+                $('#apply-list').html(html);
+                // 绑定状态修改按钮事件
+                $('.status-btn').click(function() {
+                    $('#status-id').val($(this).data('id'));
+                    $('#status-modal').modal('show');
+                });
+            }
+        });
+    }
+    getApplyData();
+    // 状态筛选
+    $('#status-filter').change(function() {
+        getApplyData($(this).val());
+    });
+
+    // 状态提交
+    $('#status-submit').click(function() {
+        const id = $('#status-id').val();
+        const status = $('#status-form select[name=status]').val();
+        $.ajax({
+            url: '/admin/api/apply',
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify({id, status}),
+            success: function(res) {
+                if (res.status === 'success') {
+                    $('#status-modal').modal('hide');
+                    getApplyData($('#status-filter').val());
+                } else {
+                    alert('修改失败，请重试');
+                }
+            }
+        });
+    });
+});
+</script>
+</body>
+</html>
